@@ -1,10 +1,16 @@
 package ceti.cococat;
 
+import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageButton;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class GatoActivity extends AppCompatActivity implements View.OnClickListener {
     private ImageButton ibBoton1;
@@ -20,12 +26,32 @@ public class GatoActivity extends AppCompatActivity implements View.OnClickListe
     private GatoTablero tablero;
     private boolean turno;
 
+    private boolean isServer;
+    private Client client;
+    private Server server;
+    private boolean iniciar;
+
     private View coordinatorLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        isServer = getIntent().getBooleanExtra("isServer",false);
+        if(isServer){
+            server = new Server(this);
+            server.start();
+        }
+        else{
+            client = new Client(this);
+            client.start();
+        }
+        iniciar=false;
+        while(!iniciar);
         setContentView(app.com.gatococo.R.layout.activity_gato);
+
+
 
         ibBoton1 = (ImageButton) findViewById(app.com.gatococo.R.id.boton1);
         ibBoton2 = (ImageButton) findViewById(app.com.gatococo.R.id.boton2);
@@ -49,7 +75,7 @@ public class GatoActivity extends AppCompatActivity implements View.OnClickListe
 
         tablero = new GatoTablero();
 
-        turno = false;
+        turno = true;
 
         coordinatorLayout = findViewById(app.com.gatococo.R.id.snackbarPosition);
 
@@ -58,9 +84,48 @@ public class GatoActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        int x=-1,y=-1;
-        int status;
+        int status = -1;
 
+        //Obtiene filas y columnas
+        int[] xy = checkPressed(v);
+        int x = xy[0];
+        int y = xy[1];
+
+        if(turno) { // o
+            status = tablero.setO(x,y);
+            checkStatus(status, x, y);
+        }
+//        else{ // x
+//            status = tablero.setX(x,y);
+//        }
+
+    }
+
+    private View getVista(int x, int y){
+        if (x == 0 && y == 0) {
+            return ibBoton1;
+        } else if (x == 1 && y == 0) {
+            return ibBoton2;
+        } else if (x == 2 && y == 0) {
+            return ibBoton3;
+        } else if (x == 0 && y == 1) {
+            return ibBoton4;
+        } else if (x == 1 && y == 1) {
+            return ibBoton5;
+        } else if (x == 2 && y == 1) {
+            return ibBoton6;
+        } else if (x == 0) {
+            return ibBoton7;
+        } else if (x == 1) {
+            return ibBoton8;
+        } else if (x == 2) {
+            return ibBoton9;
+        }
+        return null;
+    }
+
+    private int[] checkPressed(View v){
+        int x=-1,y=-1;
         if (v == ibBoton1) {
             x=0;
             y=0;
@@ -89,19 +154,15 @@ public class GatoActivity extends AppCompatActivity implements View.OnClickListe
             x=2;
             y=2;
         }
+        int[] xy = new int[2];
+        xy[0] = x;
+        xy[1] = y;
+        return xy;
+    }
 
-        if(turno) { // o
-            status = tablero.setO(x,y);
-        }
-        else{ // x
-            status = tablero.setX(x,y);
-        }
-
+    private void checkStatus(int status, int x, int y){
         if(status == 0){ //no paso nada
             pintar(x,y,false);
-        }
-        else if(status == 2){
-
         }
         else if(status>=10 && status<=17){ //alguien ya gano
             pintarWinningLine(status);
@@ -139,9 +200,63 @@ public class GatoActivity extends AppCompatActivity implements View.OnClickListe
             snackbar.show();
 
         }
-
     }
 
+    private void jugadaOponente(int x, int y){
+        View v = getVista(x,y);
+        int status = tablero.setO(x,y);
+        checkStatus(status, x, y);
+    }
+
+    public void dataReceived(JSONObject json){
+        try {
+            switch (json.getInt("code")) {
+                case 1:     //turno
+                    turno = json.getBoolean("turno");
+                    break;
+                case 2:
+
+            }
+        }
+        catch(JSONException e){
+            e.printStackTrace();
+        }
+    }
+
+    private void sendCoordinates(int x, int y){
+        JSONObject json = new JSONObject();
+        try{
+            json.put("code",2);
+            json.put("x",x);
+            json.put("y",y);
+            if(isServer) {
+                server.sendData(json.toString());
+            }
+            else{
+                client.sendData(json.toString());
+            }
+        }
+        catch(JSONException e){
+            e.printStackTrace();
+        }
+    }
+
+    private void sendTurn(boolean turn){
+        JSONObject json = new JSONObject();
+        try{
+            json.put("code",2);
+            json.put("turn",turn);
+            if(isServer) {
+                server.sendData(json.toString());
+            }
+            else{
+                client.sendData(json.toString());
+            }
+        }
+        catch(JSONException e){
+            e.printStackTrace();
+        }
+    }
 
     public void disableBotones(){
         ibBoton1.setEnabled(false);
@@ -314,4 +429,7 @@ public class GatoActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    public void setIniciar(boolean iniciar) {
+        this.iniciar = iniciar;
+    }
 }
