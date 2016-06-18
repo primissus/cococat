@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:stretchColumns="*"
+    android:weightSum="3"
+    android:background="@color/negro">
+
+    <TableRow
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+
+        <ImageButton
+            android:id="@+id/boton1"
+            android:layout_height="match_parent"
+            android:src="@drawable/nostatus"
+            android:tint="@color/nostatus"
+            />
+        <ImageButton
+            android:id="@+id/boton2"
+            android:layout_height="match_parent"
+            android:src="@drawable/nostatus"
+            android:tint="@color/nostatus"
+            />
+        <ImageButton
+            android:id="@+id/boton3"
+            android:layout_height="match_parent"
+            android:src="@drawable/nostatus"
+            android:tint="@color/nostatus"
+            />
+
+    </TableRow>
+
+    <TableRow
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+
+        <ImageButton
+            android:id="@+id/boton4"
+            android:layout_height="match_parent"
+            android:src="@drawable/nostatus"
+            android:tint="@color/nostatus"
+            />
+        <ImageButton
+            android:id="@+id/boton5"
+            android:layout_height="match_parent"
+            android:src="@drawable/nostatus"
+            android:tint="@color/nostatus"
+            />
+        <ImageButton
+            android:id="@+id/boton6"
+            android:layout_height="match_parent"
+            android:src="@drawable/nostatus"
+            android:tint="@color/nostatus"
+            />
+
+    </TableRow>
+
+    <TableRow
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+
+        <ImageButton
+            android:id="@+id/boton7"
+            android:layout_height="match_parent"
+            android:src="@drawable/nostatus"
+            android:tint="@color/nostatus"
+            />
+        <ImageButton
+            android:id="@+id/boton8"
+            android:layout_height="match_parent"
+            android:src="@drawable/nostatus"
+            android:tint="@color/nostatus"
+            />
+        <ImageButton
+            android:id="@+id/boton9"
+            android:layout_height="match_parent"
+            android:src="@drawable/nostatus"
+            android:tint="@color/nostatus"
+            />
+
+    </TableRow>
+
+    <LinearLayout
+        android:orientation="horizontal">
+        <android.support.design.widget.CoordinatorLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/snackbarPosition">
+        </android.support.design.widget.CoordinatorLayout>
+    </LinearLayout>
+</TableLayout>

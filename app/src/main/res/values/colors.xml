@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="rojo">#ff4d4d</color>
+    <color name="azul">#0044cc</color>
+    <color name="nostatus">#333333</color>
+    <color name="winningcolor">#5055BF</color>
+    <color name="negro">#3A3A38	</color>
+</resources>
