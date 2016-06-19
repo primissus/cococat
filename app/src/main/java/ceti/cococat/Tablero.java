@@ -3,7 +3,7 @@ package ceti.cococat;
 /**
  * Created by Administrador on 16/06/2016.
  */
-public class GatoTablero {
+public class Tablero {
 
     private char[][] tablero;
     private int x,y;
@@ -13,7 +13,7 @@ public class GatoTablero {
     private int conteoRestart;
     private int statusWin;
 
-    public GatoTablero(){
+    public Tablero(){
         conteoRestart=0;
         //lenamos el tablero con z's
         x=0;

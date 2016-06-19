@@ -12,15 +12,15 @@ import java.net.Socket;
 /**
  * Created by law on 12/06/16.
  */
-public class Server extends Thread {
+public class ServerThread extends Thread {
 
     private ServerSocket serverSocket;
     private Socket socket;
     private boolean running;
-    private GatoActivity gatoActivity;
+    private TicTacToeActivity ticTacToeActivity;
 
-    public Server(GatoActivity gatoActivity) {
-        this.gatoActivity = gatoActivity;
+    public ServerThread(TicTacToeActivity ticTacToeActivity) {
+        this.ticTacToeActivity = ticTacToeActivity;
     }
 
     @Override
@@ -29,14 +29,14 @@ public class Server extends Thread {
             serverSocket = new ServerSocket(8188);
             socket = serverSocket.accept();
             serverSocket.close();
-            gatoActivity.setIniciar(true);
-            //gatoActivity.dismissProgresDialog();
+            ticTacToeActivity.setIniciar(true);
+            //ticTacToeActivity.dismissProgresDialog();
             while(running){
                 String data = receiveData();
                 if(data!=null) {
                     try {
                         JSONObject json = new JSONObject(data);
-                        gatoActivity.dataReceived(json);
+//                        ticTacToeActivity.dataReceived(json);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

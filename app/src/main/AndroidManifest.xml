@@ -16,18 +16,21 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="ceti.cococat.GatoActivity"
-            android:screenOrientation="portrait"></activity>
+            android:name="ceti.cococat.TicTacToeActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/noTitle"></activity>
         <activity
-            android:name="ceti.cococat.MenuActivity"
-            android:screenOrientation="portrait">
+            android:name="ceti.cococat.MainActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/noTitle">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="ceti.cococat.ScoreActivity"></activity>
+        <activity android:name="ceti.cococat.ScoreActivity"
+            android:theme="@style/noTitle"></activity>
     </application>
 
 </manifest>
