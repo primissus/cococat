@@ -20,12 +20,21 @@
         android:textStyle="bold"
         android:textColor="#4d9dff" />
 
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/txtNombre"
+        android:layout_below="@+id/textView"
+        android:hint="Nombre"
+        android:layout_marginTop="30dp"
+        android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"/>
+
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/lstMenu"
-        android:layout_below="@+id/textView"
+        android:layout_below="@+id/txtNombre"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="89dp"
+        android:layout_marginTop="30dp"
         android:background="#e5e5e5" />
 </RelativeLayout>
