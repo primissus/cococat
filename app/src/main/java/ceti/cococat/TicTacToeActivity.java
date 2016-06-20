@@ -114,13 +114,13 @@ public class TicTacToeActivity extends AppCompatActivity implements View.OnClick
             if(checkTablero(row,col)) {
                 Toast.makeText(TicTacToeActivity.this, "Ganaste", Toast.LENGTH_SHORT).show();
                 disableButtons();
+                turn = false;
                 Timer timer = new Timer();
                 TimerTask task = new TimerTask() {
                     @Override
                     public void run() {
                         enableButtons();
                         clear();
-                        turn = false;
                         if(isServer) {
                             setTurn();
                             sendTurn(!turn);
@@ -133,13 +133,13 @@ public class TicTacToeActivity extends AppCompatActivity implements View.OnClick
             if(checkTie()){
                 Toast.makeText(TicTacToeActivity.this, "Empate", Toast.LENGTH_SHORT).show();
                 disableButtons();
+                turn = false;
                 Timer timer = new Timer();
                 TimerTask task = new TimerTask() {
                     @Override
                     public void run() {
                         enableButtons();
                         clear();
-                        turn = false;
                         if(isServer) {
                             setTurn();
                             sendTurn(!turn);
@@ -238,13 +238,13 @@ public class TicTacToeActivity extends AppCompatActivity implements View.OnClick
                 }
             });
             disableButtons();
+            turn = false;
             Timer timer = new Timer();
             TimerTask task = new TimerTask() {
                 @Override
                 public void run() {
                     enableButtons();
                     clear();
-                    turn = false;
                     if(isServer) {
                         setTurn();
                         sendTurn(!turn);
@@ -262,18 +262,18 @@ public class TicTacToeActivity extends AppCompatActivity implements View.OnClick
                 }
             });
             disableButtons();
+            turn = false;
             Timer timer = new Timer();
             TimerTask task = new TimerTask() {
                 @Override
                 public void run() {
                     enableButtons();
                     clear();
-                    turn = false;
                     if(isServer) {
                         setTurn();
                         sendTurn(!turn);
                     }
-                    addStatusPartida(1);
+                    addStatusPartida(0);
                 }
             };
             timer.schedule(task, 4000);
