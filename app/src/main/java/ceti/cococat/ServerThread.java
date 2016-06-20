@@ -29,14 +29,14 @@ public class ServerThread extends Thread {
             serverSocket = new ServerSocket(8188);
             socket = serverSocket.accept();
             serverSocket.close();
-            ticTacToeActivity.setIniciar(true);
-            //ticTacToeActivity.dismissProgresDialog();
+            ticTacToeActivity.enableButtons();
+            ticTacToeActivity.init();
             while(running){
                 String data = receiveData();
                 if(data!=null) {
                     try {
                         JSONObject json = new JSONObject(data);
-//                        ticTacToeActivity.dataReceived(json);
+                        ticTacToeActivity.dataReceived(json);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

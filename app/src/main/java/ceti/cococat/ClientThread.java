@@ -25,14 +25,13 @@ public class ClientThread extends Thread {
     public void run() {
         try {
             socket = new Socket("192.168.43.1",8188);
-            ticTacToeActivity.setIniciar(true);
-            //ticTacToeActivity.dismissProgresDialog();
+            ticTacToeActivity.enableButtons();
             while(running){
                 String data = receiveData();
                 if(data!=null) {
                     try {
                         JSONObject json = new JSONObject(data);
-//                        ticTacToeActivity.dataReceived(json);
+                        ticTacToeActivity.dataReceived(json);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
