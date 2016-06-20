@@ -43,6 +43,7 @@ public class TicTacToeActivity extends AppCompatActivity implements View.OnClick
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        turn = false;
         isServer = getIntent().getBooleanExtra("isServer",false);
         if(isServer){
             serverThread = new ServerThread(this);
@@ -70,8 +71,6 @@ public class TicTacToeActivity extends AppCompatActivity implements View.OnClick
         clear();
 
         disableButtons();
-
-        turn = false;
     }
 
     public void init(){
@@ -111,6 +110,7 @@ public class TicTacToeActivity extends AppCompatActivity implements View.OnClick
             buttons[row][col].setText("X");
             buttons[row][col].setTextColor(Color.RED);
             turn = false;
+            sendCoordinates(row,col);
             if(checkTablero(row,col)) {
                 Toast.makeText(TicTacToeActivity.this, "Ganaste", Toast.LENGTH_SHORT).show();
                 disableButtons();
@@ -149,7 +149,6 @@ public class TicTacToeActivity extends AppCompatActivity implements View.OnClick
                 };
                 timer.schedule(task, 4000);
             }
-            sendCoordinates(row,col);
         }
     }
 
@@ -221,13 +220,23 @@ public class TicTacToeActivity extends AppCompatActivity implements View.OnClick
         return ret;
     }
 
-    private void jugadaOponente(int row, int col){
+    private void oponent(final int row, final int col){
         tablero[row][col] = 2;
-        buttons[row][col].setText("O");
-        buttons[row][col].setTextColor(Color.BLUE);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                buttons[row][col].setText("O");
+                buttons[row][col].setTextColor(Color.BLUE);
+            }
+        });
         turn = true;
         if(checkTablero(row,col)) {
-            Toast.makeText(TicTacToeActivity.this, "Perdiste", Toast.LENGTH_SHORT).show();
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(TicTacToeActivity.this, "Perdiste", Toast.LENGTH_SHORT).show();
+                }
+            });
             disableButtons();
             Timer timer = new Timer();
             TimerTask task = new TimerTask() {
@@ -240,6 +249,31 @@ public class TicTacToeActivity extends AppCompatActivity implements View.OnClick
                         setTurn();
                         sendTurn(!turn);
                     }
+                    addStatusPartida(1);
+                }
+            };
+            timer.schedule(task, 4000);
+        }
+        if(checkTie()){
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(TicTacToeActivity.this, "Empate", Toast.LENGTH_SHORT).show();
+                }
+            });
+            disableButtons();
+            Timer timer = new Timer();
+            TimerTask task = new TimerTask() {
+                @Override
+                public void run() {
+                    enableButtons();
+                    clear();
+                    turn = false;
+                    if(isServer) {
+                        setTurn();
+                        sendTurn(!turn);
+                    }
+                    addStatusPartida(1);
                 }
             };
             timer.schedule(task, 4000);
@@ -254,8 +288,8 @@ public class TicTacToeActivity extends AppCompatActivity implements View.OnClick
                     break;
                 case 2:
                     int row = json.getInt("row");
-                    int col = json.getInt("row");
-                    //jugadaOponente(x,y);
+                    int col = json.getInt("col");
+                    oponent(row,col);
                     break;
             }
         }
@@ -323,27 +357,27 @@ public class TicTacToeActivity extends AppCompatActivity implements View.OnClick
 
     private boolean checkTablero(int row, int col){
         if(tablero[row][0] == tablero[row][1] && tablero[row][0] == tablero[row][2]){//Filas
-            buttons[row][0].getBackground().setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
-            buttons[row][1].getBackground().setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
-            buttons[row][2].getBackground().setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
+            illuminateButton(buttons[row][0]);
+            illuminateButton(buttons[row][1]);
+            illuminateButton(buttons[row][2]);
             return true;
         }
         if(tablero[0][col] == tablero[1][col] && tablero[0][col] == tablero[2][col]){//Columnas
-            buttons[0][col].getBackground().setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
-            buttons[1][col].getBackground().setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
-            buttons[2][col].getBackground().setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
+            illuminateButton(buttons[0][col]);
+            illuminateButton(buttons[1][col]);
+            illuminateButton(buttons[2][col]);
             return true;
         }
-        if(tablero[0][0] == tablero[1][1] && tablero[0][0] == tablero[2][2]){//Diagonal 1
-            buttons[0][0].getBackground().setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
-            buttons[1][1].getBackground().setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
-            buttons[2][2].getBackground().setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
+        if(tablero[0][0]!=0 && tablero[0][0] == tablero[1][1] && tablero[0][0] == tablero[2][2]){//Diagonal 1
+            illuminateButton(buttons[0][0]);
+            illuminateButton(buttons[1][1]);
+            illuminateButton(buttons[2][2]);
             return true;
         }
-        if(tablero[0][2] == tablero[1][1] && tablero[0][2] == tablero[2][0]){//Diagonal 2
-            buttons[0][2].getBackground().setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
-            buttons[1][1].getBackground().setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
-            buttons[2][0].getBackground().setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
+        if(tablero[0][2]!=0 && tablero[0][2] == tablero[1][1] && tablero[0][2] == tablero[2][0]){//Diagonal 2
+            illuminateButton(buttons[0][2]);
+            illuminateButton(buttons[1][1]);
+            illuminateButton(buttons[2][0]);
             return true;
         } 
         return false;
@@ -362,14 +396,28 @@ public class TicTacToeActivity extends AppCompatActivity implements View.OnClick
         return false;
     }
 
-    private void clear(){
-        for(int i=0;i<3;i++){
-            for(int j=0; j<3; j++){
-                buttons[i][j].setText(".");
-                buttons[i][j].setTextColor(Color.DKGRAY);
-                buttons[i][j].getBackground().setColorFilter(null);
-                tablero[i][j] = 0;
+    private void illuminateButton(final Button b){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                b.getBackground().setColorFilter(Color.BLUE, PorterDuff.Mode.MULTIPLY);
             }
-        }
+        });
+    }
+
+    private void clear(){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                for(int i=0;i<3;i++){
+                    for(int j=0; j<3; j++){
+                        buttons[i][j].setText(".");
+                        buttons[i][j].setTextColor(Color.DKGRAY);
+                        buttons[i][j].getBackground().setColorFilter(null);
+                        tablero[i][j] = 0;
+                    }
+                }
+            }
+        });
     }
 }
